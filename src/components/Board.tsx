@@ -22,6 +22,15 @@ export default function Board() {
     []
   );
 
+  const titleStyle = {
+    fontSize: "3em",
+    color: "yellow",
+    margin: "20px",
+    position: "absolute" as const,
+    top: "0",
+    left: "0",
+  };
+
   useEffect(() => {
     feedClient.fetch();
   }, [feedClient]);
@@ -39,5 +48,10 @@ export default function Board() {
     }
   }, [items, metadata]);
 
-  return <Flights flights={flights} />;
+  return (
+    <>
+      <h1 style={titleStyle}>Prochains départs</h1>
+      <Flights flights={flights} />
+    </>
+  );
 }
