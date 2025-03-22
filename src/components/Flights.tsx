@@ -1,21 +1,12 @@
-export const flights = `
-08:00  MUNICH                           AF1234  B01  A L'HEURE
-09:30  ATHENES                          BA4567  D35  A L'HEURE
-11:00  NEW-YORK                         DL7890  C03  A L'HEURE
-17:45  LISBONNE                         SU9012  ---  ANNULE
-12:45  COPENHAGUE                       JL0123  D04  A L'HEURE
-19:30  ALLEE DE MAROLLES                NJ3150  A25  EMBARQUEMENT
-14:30  DOLE                             QF3456  B05  A L'HEURE
-17:45  MONTREAL                         SU9012  B21  RETARDE
-16:00  EPINAL                           LH6789  D06  A L'HEURE
-17:45  BIARRITZ                         SU9012  C07  A L'HEURE`;
+import { useEffect, useState } from "react";
 
-export const parsedFlights = flights
-  .trim()
-  .split("\n")
-  .map((line) => line.padEnd(65).split(""));
+interface FlightsProps {
+  flights: string;
+}
 
-export default function Flights() {
+export default function Flights({ flights }: FlightsProps) {
+  const [parsedFlights, setParsedFlights] = useState<string[][]>([]);
+
   const boardStyle = {
     backgroundColor: "black",
     height: "100%",
@@ -42,6 +33,15 @@ export default function Flights() {
         100% { transform: rotateX(360deg); }
       }
     `;
+
+  useEffect(() => {
+    setParsedFlights(
+      flights
+        .trim()
+        .split("\n")
+        .map((line: string) => line.padEnd(65).split(""))
+    );
+  }, [flights, setParsedFlights]);
 
   return (
     <div style={boardStyle}>
