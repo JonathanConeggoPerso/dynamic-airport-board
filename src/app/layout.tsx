@@ -22,10 +22,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const bodyStyle = {
+    width: "90vw",
+    height: "70vh",
+    backgroundColor: "#333",
+    margin: "15vh auto",
+  };
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={bodyStyle}
       >
         {children}
       </body>
