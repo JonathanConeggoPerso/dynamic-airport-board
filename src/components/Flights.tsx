@@ -30,7 +30,6 @@ export default function Flights() {
     backgroundColor: "#4d4d4d",
     color: "yellow",
     flex: 1,
-    textAlign: "center",
     fontWeight: "bold",
     border: "2px solid black",
     animation: `rotate 1s ease-in-out`,
