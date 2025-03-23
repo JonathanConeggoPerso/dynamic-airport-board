@@ -56,7 +56,7 @@ export default function Board() {
         feedClient.markAsArchived(item);
       });
     }
-  }, [items, metadata]);
+  }, [feedClient, items, metadata]);
 
   return (
     <>

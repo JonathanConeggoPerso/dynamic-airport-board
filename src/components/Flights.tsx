@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Flight from "./Flight";
 
 interface FlightsProps {
@@ -23,12 +23,15 @@ export default function Flights({ flights }: FlightsProps) {
     width: "100%",
   };
 
-  const animateFlight = (flightIndex: number) => {
-    const flight = parsedFlights[flightIndex];
-    if (!flight) return;
-    parsedFlights[flightIndex] = { ...flight, state: "animating" };
-    setParsedFlights([...parsedFlights]);
-  };
+  const animateFlight = useCallback(
+    (flightIndex: number) => {
+      const flight = parsedFlights[flightIndex];
+      if (!flight) return;
+      parsedFlights[flightIndex] = { ...flight, state: "animating" };
+      setParsedFlights([...parsedFlights]);
+    },
+    [parsedFlights]
+  );
 
   const handleAnimationEnd = (flightIndex: number) => {
     const flight = parsedFlights[flightIndex];
