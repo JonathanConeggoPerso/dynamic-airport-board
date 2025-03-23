@@ -9,8 +9,10 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
+      const body = JSON.parse(req.body); // Parse the request body
+      const { eventType } = body;
       await knock.workflows.trigger("weddingwaiting", {
-        data: { event_type: "launch-jingle" },
+        data: { event_type: eventType },
         recipients: [
           {
             id: "board",

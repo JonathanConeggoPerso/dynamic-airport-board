@@ -1,12 +1,14 @@
 "use client";
 
 import { useKnockFeed, useNotificationStore } from "@knocklabs/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Flights from "./Flights";
 
 export default function Board() {
   const { feedClient } = useKnockFeed();
   const { items, metadata } = useNotificationStore(feedClient);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+
   const flights = useMemo(
     () => `
 08:00  MUNICH                           AF1234  B01  A L'HEURE
@@ -37,21 +39,41 @@ export default function Board() {
 
   useEffect(() => {
     if (items.length > 0) {
-      const launchJingle = items.find(
-        (item) => item.data?.event_type === "launch-jingle"
-      );
-      if (launchJingle) {
-        const audio = new Audio("./airport-call.mp3");
-        audio.play();
-        feedClient.markAsArchived(launchJingle);
-      }
+      items.forEach((item) => {
+        const eventType = item.data?.event_type;
+        console.log(eventType);
+        switch (eventType) {
+          case "launch-jingle": {
+            const audio = new Audio("./airport-call.mp3");
+            audio.play();
+            break;
+          }
+          case "launch-video": {
+            setVideoPlaying(true);
+            break;
+          }
+        }
+        feedClient.markAsArchived(item);
+      });
     }
   }, [items, metadata]);
 
   return (
     <>
-      <h1 style={titleStyle}>Prochains départs</h1>
-      <Flights flights={flights} />
+      {videoPlaying && (
+        <video
+          autoPlay
+          controls
+          src="./SecurityVideos.mp4"
+          onEnded={() => setVideoPlaying(false)}
+        ></video>
+      )}
+      {!videoPlaying && (
+        <>
+          <h1 style={titleStyle}>Prochains départs</h1>
+          <Flights flights={flights} />
+        </>
+      )}
     </>
   );
 }
