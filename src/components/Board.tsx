@@ -3,6 +3,7 @@
 import { useKnockFeed, useNotificationStore } from "@knocklabs/react";
 import { useEffect, useMemo, useState } from "react";
 import Flights from "./Flights";
+import VideoPlayer from "./VideoPlayer";
 
 export default function Board() {
   const { feedClient } = useKnockFeed();
@@ -66,14 +67,7 @@ export default function Board() {
 
   return (
     <>
-      {videoPlaying && (
-        <video
-          autoPlay
-          controls
-          src="./SecurityVideos.mp4"
-          onEnded={onVideoEnd}
-        ></video>
-      )}
+      {videoPlaying && <VideoPlayer onVideoEnd={onVideoEnd} />}
       <div style={{ visibility: videoPlaying ? "hidden" : "visible" }}>
         <h1 style={titleStyle}>Prochains départs</h1>
         <Flights flights={flights} videoPlayed={videoPlayed} />
