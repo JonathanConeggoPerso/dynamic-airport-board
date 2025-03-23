@@ -47,9 +47,9 @@ export default function FlightLetter({
     if (animationCount.current === iterationCount - 1) {
       setCurrentLetter(letter);
     } else {
-      const randomLetter = String.fromCharCode(
-        65 + Math.floor(Math.random() * 26)
-      );
+      const randomLetter = /^[0-9]$/.test(letter)
+        ? String.fromCharCode(48 + Math.floor(Math.random() * 10))
+        : String.fromCharCode(65 + Math.floor(Math.random() * 26));
       setCurrentLetter(randomLetter);
     }
   };
