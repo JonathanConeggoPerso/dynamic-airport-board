@@ -8,6 +8,7 @@ export default function Board() {
   const { feedClient } = useKnockFeed();
   const { items, metadata } = useNotificationStore(feedClient);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [videoPlayed, setVideoPlayed] = useState(false);
 
   const flights = useMemo(
     () => `
@@ -16,7 +17,7 @@ export default function Board() {
 11:00  NEW-YORK                         DL7890  C03  A L'HEURE
 17:45  LISBONNE                         SU9012  ---  ANNULE
 12:45  COPENHAGUE                       JL0123  D04  A L'HEURE
-19:30  ALLEE DE MAROLLES                NJ3150  A25  EMBARQUEMENT
+14:00  ALLEE DE MAROLLES                NJ3150  A25  EMBARQUEMENT
 14:30  DOLE                             QF3456  B05  A L'HEURE
 17:45  MONTREAL                         SU9012  B21  RETARDE
 16:00  EPINAL                           LH6789  D06  A L'HEURE
@@ -58,6 +59,11 @@ export default function Board() {
     }
   }, [feedClient, items, metadata]);
 
+  const onVideoEnd = () => {
+    setVideoPlaying(false);
+    setVideoPlayed(true);
+  };
+
   return (
     <>
       {videoPlaying && (
@@ -65,15 +71,13 @@ export default function Board() {
           autoPlay
           controls
           src="./SecurityVideos.mp4"
-          onEnded={() => setVideoPlaying(false)}
+          onEnded={onVideoEnd}
         ></video>
       )}
-      {!videoPlaying && (
-        <>
-          <h1 style={titleStyle}>Prochains départs</h1>
-          <Flights flights={flights} />
-        </>
-      )}
+      <div style={{ visibility: videoPlaying ? "hidden" : "visible" }}>
+        <h1 style={titleStyle}>Prochains départs</h1>
+        <Flights flights={flights} videoPlayed={videoPlayed} />
+      </div>
     </>
   );
 }

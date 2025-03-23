@@ -3,6 +3,7 @@ import Flight from "./Flight";
 
 interface FlightsProps {
   flights: string;
+  videoPlayed: boolean;
 }
 
 interface FlightInformations {
@@ -10,7 +11,7 @@ interface FlightInformations {
   state: "animating" | "animated" | "waiting";
 }
 
-export default function Flights({ flights }: FlightsProps) {
+export default function Flights({ flights, videoPlayed }: FlightsProps) {
   const [parsedFlights, setParsedFlights] = useState<FlightInformations[]>([]);
 
   const boardStyle = {
@@ -21,6 +22,10 @@ export default function Flights({ flights }: FlightsProps) {
   const flightStyle = {
     display: "flex",
     width: "100%",
+  };
+
+  const formatFlightLine = (line: string) => {
+    return line.padEnd(65).split("");
   };
 
   const animateFlight = useCallback(
@@ -40,13 +45,20 @@ export default function Flights({ flights }: FlightsProps) {
   };
 
   useEffect(() => {
-    if (parsedFlights[0]?.state === "waiting") animateFlight(0);
-    else if (!parsedFlights.find((flight) => flight.state === "animating")) {
-      const lastAnimatedIndex = parsedFlights
-        .map((flight) => flight.state)
-        .lastIndexOf("animated");
-      animateFlight(lastAnimatedIndex + 1);
+    if (!parsedFlights.find((flight) => flight.state === "animating")) {
+      const firstFlightWaitingIndex = parsedFlights.findIndex(
+        (flight) => flight.state === "waiting"
+      );
+      if (firstFlightWaitingIndex !== -1)
+        animateFlight(firstFlightWaitingIndex);
     }
+    // if (parsedFlights[0]?.state === "waiting") animateFlight(0);
+    // else if (!parsedFlights.find((flight) => flight.state === "animating")) {
+    //   const lastAnimatedIndex = parsedFlights
+    //     .map((flight) => flight.state)
+    //     .lastIndexOf("animated");
+    //   animateFlight(lastAnimatedIndex + 1);
+    // }
   }, [animateFlight, parsedFlights]);
 
   useEffect(() => {
@@ -56,12 +68,33 @@ export default function Flights({ flights }: FlightsProps) {
         .split("\n")
         .map((line: string) => {
           return {
-            letters: line.padEnd(65).split(""),
+            letters: formatFlightLine(line),
             state: "waiting",
           };
         })
     );
   }, [flights, setParsedFlights]);
+
+  useEffect(() => {
+    if (videoPlayed) {
+      const weddingFlightIndex = parsedFlights.findIndex((flight) =>
+        flight.letters.join("").includes("ALLEE DE MAROLLES")
+      );
+      const weddingFlight = parsedFlights[weddingFlightIndex];
+      console.log("bef", parsedFlights);
+      if (weddingFlight) {
+        parsedFlights[weddingFlightIndex] = {
+          letters: formatFlightLine(
+            weddingFlight.letters.join("").replace("EMBARQUEMENT", "EN COURS")
+          ),
+          state: "waiting",
+        };
+      }
+      console.log("aft", parsedFlights);
+
+      setParsedFlights([...parsedFlights]);
+    }
+  }, [videoPlayed]);
 
   return (
     <div style={boardStyle}>
