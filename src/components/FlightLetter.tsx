@@ -3,8 +3,8 @@
 import { useMemo, useRef, useState } from "react";
 
 interface FlightLetterProps {
-  letter: string;
-  onAnimationEnd: () => void;
+  readonly letter: string;
+  readonly onAnimationEnd: () => void;
 }
 
 export default function FlightLetter({
@@ -47,7 +47,7 @@ export default function FlightLetter({
     if (animationCount.current === iterationCount - 1) {
       setCurrentLetter(letter);
     } else {
-      const randomLetter = /^[0-9]$/.test(letter)
+      const randomLetter = /^\d$/.test(letter)
         ? String.fromCharCode(48 + Math.floor(Math.random() * 10))
         : String.fromCharCode(65 + Math.floor(Math.random() * 26));
       setCurrentLetter(randomLetter);

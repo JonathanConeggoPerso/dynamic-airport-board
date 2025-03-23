@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import Flight from "./Flight";
 
 interface FlightsProps {
-  flights: string;
-  videoPlayed: boolean;
+  readonly flights: string;
+  readonly videoPlayed: boolean;
 }
 
 interface FlightInformations {
@@ -52,13 +52,6 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
       if (firstFlightWaitingIndex !== -1)
         animateFlight(firstFlightWaitingIndex);
     }
-    // if (parsedFlights[0]?.state === "waiting") animateFlight(0);
-    // else if (!parsedFlights.find((flight) => flight.state === "animating")) {
-    //   const lastAnimatedIndex = parsedFlights
-    //     .map((flight) => flight.state)
-    //     .lastIndexOf("animated");
-    //   animateFlight(lastAnimatedIndex + 1);
-    // }
   }, [animateFlight, parsedFlights]);
 
   useEffect(() => {
@@ -94,7 +87,7 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
 
       setParsedFlights([...parsedFlights]);
     }
-  }, [videoPlayed]);
+  }, [parsedFlights, videoPlayed]);
 
   return (
     <div style={boardStyle}>
