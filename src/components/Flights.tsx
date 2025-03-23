@@ -67,7 +67,6 @@ export default function Flights({ flights }: FlightsProps) {
           {flight.state !== "waiting" && (
             <Flight
               flightLetters={flight.letters}
-              flightsCount={parsedFlights.length}
               onAnimationEnd={() => handleAnimationEnd(flightIndex)}
             />
           )}
