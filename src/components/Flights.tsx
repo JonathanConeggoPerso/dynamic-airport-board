@@ -74,20 +74,21 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
         flight.letters.join("").includes("ALLEE DE MAROLLES")
       );
       const weddingFlight = parsedFlights[weddingFlightIndex];
-      console.log("bef", parsedFlights);
       if (weddingFlight) {
         parsedFlights[weddingFlightIndex] = {
           letters: formatFlightLine(
-            weddingFlight.letters.join("").replace("EMBARQUEMENT", "EN COURS")
+            weddingFlight.letters
+              .join("")
+              .replace("PROCHAIN VOL", "EMBARQUEMENT")
           ),
           state: "waiting",
         };
       }
-      console.log("aft", parsedFlights);
 
       setParsedFlights([...parsedFlights]);
     }
-  }, [parsedFlights, videoPlayed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoPlayed]);
 
   return (
     <div style={boardStyle}>
