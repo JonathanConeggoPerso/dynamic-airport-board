@@ -27,7 +27,8 @@ export default function Board() {
   );
 
   const titleStyle = {
-    fontSize: "3em",
+    fontSize: "4em",
+    fontWeight: "bold" as const,
     color: "yellow",
     margin: "20px",
     position: "absolute" as const,
