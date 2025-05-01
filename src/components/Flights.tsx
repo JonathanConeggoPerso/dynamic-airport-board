@@ -1,3 +1,4 @@
+import { useKnockFeed, useNotificationStore } from "@knocklabs/react";
 import { useCallback, useEffect, useState } from "react";
 import Flight from "./Flight";
 
@@ -13,6 +14,22 @@ interface FlightInformations {
 
 export default function Flights({ flights, videoPlayed }: FlightsProps) {
   const [parsedFlights, setParsedFlights] = useState<FlightInformations[]>([]);
+  const { feedClient } = useKnockFeed();
+  const { items, metadata } = useNotificationStore(feedClient);
+
+  const initFlights = useCallback(() => {
+    setParsedFlights(
+      flights
+        .trim()
+        .split("\n")
+        .map((line: string) => {
+          return {
+            letters: formatFlightLine(line),
+            state: "waiting",
+          };
+        })
+    );
+  }, [flights, setParsedFlights]);
 
   const boardStyle = {
     backgroundColor: "black",
@@ -45,6 +62,26 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
   };
 
   useEffect(() => {
+    feedClient.fetch();
+  }, [feedClient]);
+
+  useEffect(() => {
+    if (items.length > 0) {
+      items.forEach((item) => {
+        const eventType = item.data?.event_type;
+        console.log(eventType);
+        switch (eventType) {
+          case "reset-flights": {
+            initFlights();
+            feedClient.markAsArchived(item);
+            break;
+          }
+        }
+      });
+    }
+  }, [feedClient, items, metadata, initFlights]);
+
+  useEffect(() => {
     if (!parsedFlights.find((flight) => flight.state === "animating")) {
       const firstFlightWaitingIndex = parsedFlights.findIndex(
         (flight) => flight.state === "waiting"
@@ -55,18 +92,8 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
   }, [animateFlight, parsedFlights]);
 
   useEffect(() => {
-    setParsedFlights(
-      flights
-        .trim()
-        .split("\n")
-        .map((line: string) => {
-          return {
-            letters: formatFlightLine(line),
-            state: "waiting",
-          };
-        })
-    );
-  }, [flights, setParsedFlights]);
+    initFlights();
+  }, [initFlights]);
 
   useEffect(() => {
     if (videoPlayed) {

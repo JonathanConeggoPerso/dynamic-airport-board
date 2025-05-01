@@ -55,6 +55,10 @@ export default function Admin() {
       <h1>Admin Page</h1>
       <div style={actionsContainerStyle}>
         <ActionButton text="Lancer un jingle" eventType="launch-jingle" />
+        <ActionButton
+          text="Relancer les panneaux de vol"
+          eventType="reset-flights"
+        />
         <ActionButton text="Lancer la vidéo" eventType="launch-video" />
       </div>
     </>
