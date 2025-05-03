@@ -1,5 +1,5 @@
 import { useKnockFeed, useNotificationStore } from "@knocklabs/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Flight from "./Flight";
 
 interface FlightsProps {
@@ -16,8 +16,18 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
   const [parsedFlights, setParsedFlights] = useState<FlightInformations[]>([]);
   const { feedClient } = useKnockFeed();
   const { items, metadata } = useNotificationStore(feedClient);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const initFlights = useCallback(() => {
+    // Clear any existing timer when initFlights is called
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+
+    const audio = new Audio("./airport-call.mp3");
+    audio.play();
+
     setParsedFlights(
       flights
         .trim()
@@ -88,11 +98,28 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
       );
       if (firstFlightWaitingIndex !== -1)
         animateFlight(firstFlightWaitingIndex);
+      else {
+        // Clear any existing timer before setting a new one
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+        timerRef.current = setTimeout(() => {
+          initFlights();
+        }, 120000); // 5 minutes
+      }
     }
-  }, [animateFlight, parsedFlights]);
+  }, [animateFlight, parsedFlights, initFlights]);
 
   useEffect(() => {
     initFlights();
+
+    // Cleanup function to clear the timer when component unmounts
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [initFlights]);
 
   useEffect(() => {
