@@ -4,6 +4,7 @@ import Flight from "./Flight";
 
 interface FlightsProps {
   readonly flights: string;
+  readonly videoPlaying: boolean;
   readonly videoPlayed: boolean;
 }
 
@@ -12,7 +13,11 @@ interface FlightInformations {
   state: "animating" | "animated" | "waiting";
 }
 
-export default function Flights({ flights, videoPlayed }: FlightsProps) {
+export default function Flights({
+  flights,
+  videoPlaying,
+  videoPlayed,
+}: FlightsProps) {
   const [parsedFlights, setParsedFlights] = useState<FlightInformations[]>([]);
   const { feedClient } = useKnockFeed();
   const { items, metadata } = useNotificationStore(feedClient);
@@ -103,9 +108,11 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
         if (timerRef.current) {
           clearTimeout(timerRef.current);
         }
-        timerRef.current = setTimeout(() => {
-          initFlights();
-        }, 120000); // 5 minutes
+        if (!videoPlayed && !videoPlaying) {
+          timerRef.current = setTimeout(() => {
+            initFlights();
+          }, 120000); // 5 minutes
+        }
       }
     }
   }, [animateFlight, parsedFlights, initFlights]);
@@ -121,6 +128,16 @@ export default function Flights({ flights, videoPlayed }: FlightsProps) {
       }
     };
   }, [initFlights]);
+
+  useEffect(() => {
+    if (videoPlaying) {
+      // Clear any existing timer when video is playing
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [videoPlaying]);
 
   useEffect(() => {
     if (videoPlayed) {
