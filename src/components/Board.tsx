@@ -73,7 +73,11 @@ export default function Board() {
       {videoPlaying && <VideoPlayer onVideoEnd={onVideoEnd} />}
       <div style={{ visibility: videoPlaying ? "hidden" : "visible" }}>
         <h1 style={titleStyle}>Prochains départs</h1>
-        <Flights flights={flights} videoPlayed={videoPlayed} />
+        <Flights
+          flights={flights}
+          videoPlaying={videoPlaying}
+          videoPlayed={videoPlayed}
+        />
       </div>
     </>
   );
