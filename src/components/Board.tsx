@@ -1,6 +1,7 @@
 "use client";
 
 import { useKnockFeed, useNotificationStore } from "@knocklabs/react";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import Flights from "./Flights";
 import VideoPlayer from "./VideoPlayer";
@@ -77,6 +78,19 @@ export default function Board() {
           flights={flights}
           videoPlaying={videoPlaying}
           videoPlayed={videoPlayed}
+        />
+        <Image
+          src="WeddingIcon.svg"
+          alt="Wedding Icon"
+          width={200}
+          height={200}
+          style={{
+            position: "absolute",
+            bottom: "50px",
+            left: "calc(50% - 200px)",
+            filter:
+              "invert(92%) sepia(94%) saturate(1404%) hue-rotate(358deg) brightness(106%) contrast(107%)",
+          }}
         />
       </div>
     </>
