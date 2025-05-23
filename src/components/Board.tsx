@@ -54,6 +54,12 @@ export default function Board() {
             feedClient.markAsArchived(item);
             break;
           }
+          case "launch-onboarding-jingle": {
+            const audio = new Audio("./JingleEmbarquement.m4a");
+            audio.play();
+            feedClient.markAsArchived(item);
+            break;
+          }
           case "launch-video": {
             setVideoPlaying(true);
             feedClient.markAsArchived(item);
