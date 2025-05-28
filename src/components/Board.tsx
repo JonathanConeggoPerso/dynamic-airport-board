@@ -62,6 +62,7 @@ export default function Board() {
           }
           case "launch-video": {
             setVideoPlaying(true);
+            setVideoPlayed(false);
             feedClient.markAsArchived(item);
             break;
           }
